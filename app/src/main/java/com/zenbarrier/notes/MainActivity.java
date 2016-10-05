@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -22,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences preferences;
     ArrayList<String> notes;
     ArrayAdapter<String> adapter;
-    final int REQUEST_CODE_NOTE = 1;
+    static final int REQUEST_CODE_NOTE = 1;
+    static final int REQUEST_CODE_EDIT = 2;
+    int editPostition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+                intent.putExtra("requestCode", REQUEST_CODE_NOTE);
                 startActivityForResult(intent, REQUEST_CODE_NOTE);
             }
         });
@@ -52,6 +56,16 @@ public class MainActivity extends AppCompatActivity {
         ListView notesList = (ListView)findViewById(R.id.notesList);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1 ,notes);
         notesList.setAdapter(adapter);
+        notesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+                editPostition = position;
+                intent.putExtra("edit", notes.get(position));
+                intent.putExtra("requestCode", REQUEST_CODE_EDIT);
+                startActivityForResult(intent, REQUEST_CODE_EDIT);
+            }
+        });
     }
 
     @Override
@@ -65,6 +79,20 @@ public class MainActivity extends AppCompatActivity {
                     notes.add(result);
                     adapter.notifyDataSetChanged();
                     preferences.edit().putStringSet("notes",new HashSet<String>(notes)).apply();
+                }
+            }
+        }
+        if(requestCode == REQUEST_CODE_EDIT){
+            String result = data.getStringExtra("note");
+            if(resultCode == RESULT_OK){
+                if(result.length() > 0){
+                    notes.set(editPostition, result);
+                    adapter.notifyDataSetChanged();
+                    preferences.edit().putStringSet("notes",new HashSet<String>(notes)).apply();
+                }
+                else{
+                    notes.remove(editPostition);
+                    adapter.notifyDataSetChanged();
                 }
             }
         }

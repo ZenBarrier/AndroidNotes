@@ -27,6 +27,22 @@ public class NoteActivity extends AppCompatActivity {
 
         editTextNote = (EditText) findViewById(R.id.editTextNote);
 
+        Intent parentIntent = getIntent();
+        int requestCode = parentIntent.getIntExtra("requestCode",0);
+        switch (requestCode){
+            case MainActivity.REQUEST_CODE_NOTE:
+                String draft = preferences.getString("draft", "");
+                editTextNote.setText(draft);
+                break;
+            case MainActivity.REQUEST_CODE_EDIT:
+                preferences.edit().remove("draft").commit();
+                String editNote = parentIntent.getStringExtra("edit");
+                editTextNote.setText(editNote);
+                break;
+            default:
+                finish();
+        }
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,15 +74,6 @@ public class NoteActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        String draft = preferences.getString("draft", "");
-        if(draft.length() > 0){
-            editTextNote.setText(draft);
-        }
     }
 
     @Override
