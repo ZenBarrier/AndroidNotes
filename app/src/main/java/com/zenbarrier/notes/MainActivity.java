@@ -6,17 +6,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.ArraySet;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ListView notesList = (ListView)findViewById(R.id.notesList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 ,notes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1 ,notes);
         notesList.setAdapter(adapter);
     }
 
