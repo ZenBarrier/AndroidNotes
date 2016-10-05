@@ -1,15 +1,27 @@
 package com.zenbarrier.notes;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.ArraySet;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
+
+    ArrayList<String> notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +38,19 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        Set<String> notesSet = preferences.getStringSet("notes", null);
+        if(notesSet == null){
+            notes = new ArrayList<>();
+        }
+        else{
+            notes = new ArrayList<>(notesSet);
+        }
+
+        ListView notesList = (ListView)findViewById(R.id.notesList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 ,notes);
+        notesList.setAdapter(adapter);
     }
 
     @Override
