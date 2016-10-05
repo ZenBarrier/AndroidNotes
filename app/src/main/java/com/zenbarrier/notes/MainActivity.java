@@ -14,11 +14,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
+    SharedPreferences preferences;
     ArrayList<String> notes;
+    ArrayAdapter<String> adapter;
     final int REQUEST_CODE_NOTE = 1;
 
     @Override
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         Set<String> notesSet = preferences.getStringSet("notes", null);
         if(notesSet == null){
             notes = new ArrayList<>();
@@ -47,8 +50,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ListView notesList = (ListView)findViewById(R.id.notesList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1 ,notes);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1 ,notes);
         notesList.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_CODE_NOTE){
+            if(resultCode == RESULT_OK){
+                String result = data.getStringExtra("note");
+                if(result.length() > 0){
+                    notes.add(result);
+                    adapter.notifyDataSetChanged();
+                    preferences.edit().putStringSet("notes",new HashSet<String>(notes)).apply();
+                }
+            }
+        }
     }
 
     @Override
