@@ -1,5 +1,6 @@
 package com.zenbarrier.notes;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> notes;
+    final int REQUEST_CODE_NOTE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_NOTE);
             }
         });
 

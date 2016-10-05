@@ -19,9 +19,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".noteActivity"
+            android:name=".NoteActivity"
             android:label="@string/title_activity_note"
             android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
