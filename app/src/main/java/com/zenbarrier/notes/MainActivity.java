@@ -1,12 +1,14 @@
 package com.zenbarrier.notes;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,6 +66,27 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("edit", notes.get(position));
                 intent.putExtra("requestCode", REQUEST_CODE_EDIT);
                 startActivityForResult(intent, REQUEST_CODE_EDIT);
+            }
+        });
+        notesList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                Log.i("long click", position+"");
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Delete this note?")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                notes.remove(position);
+                                adapter.notifyDataSetChanged();
+                                preferences.edit().putStringSet("notes",new HashSet<String>(notes)).apply();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .setMessage(notes.get(position))
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .create().show();
+                return true;
             }
         });
     }
